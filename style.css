@@ -1,0 +1,85 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+}
+
+.navbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #293241;
+  color: white;
+  padding: 16px 40px;
+}
+
+.navbar h2 {
+  font-size: 16px;
+}
+
+.cart {
+  position: relative;
+  font-size: 16px;
+}
+
+.cantidadCarrito {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  border-radius: 4px;
+  font-size: 12px;
+  background-color: red;
+}
+
+/* CSS para las cards items */
+
+.tienda {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  justify-content: center;
+  width: 100%;
+  padding: 15px;
+}
+
+.image {
+  width: 100%;
+  text-align: center;
+}
+
+.item {
+  /* border: 2px solid #98c1d9; */
+  padding: 8px;
+  border-radius: 8px;
+  box-shadow: 2px 2px 2px rgb(61, 90, 128, 0.8);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  gap: 8px;
+}
+
+.details h3 {
+  font-size: 12px;
+}
+
+.details p {
+  font-size: 8px;
+}
+
+.precio-cantidad {
+  display: flex;
+  justify-content: space-between;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}

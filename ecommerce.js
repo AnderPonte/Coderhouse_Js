@@ -1,56 +1,84 @@
-// Array de productos deportivos
-const productos = [
-  { nombre: "Zapatillas", precio: 100 },
-  { nombre: "Camisa", precio: 30 },
-  { nombre: "Pantalón", precio: 50 },
-];
+let tiendajs = document.getElementById("tienda");
 
-// Función para mostrar los productos disponibles
-function mostrarProductos() {
-  alert("Productos disponibles:");
-  productos.forEach((producto, index) => {
-    alert(`${index + 1}. ${producto.nombre} - $${producto.precio}`);
-  });
-}
+let carrito = JSON.parse(localStorage.getItem("carritodata")) || [];
 
-// Función para buscar un producto por su nombre
-function buscarProducto(nombre) {
-  return productos.find(
-    (producto) => producto.nombre.toLowerCase() === nombre.toLowerCase()
-  );
-}
+let crearTienda = () => {
+  return (tiendajs.innerHTML = productos.map((x) => {
+    let { id, nombre, precio, desc, img } = x;
+    let existeProducto = carrito.find((x) => x.id === id) || [];
+    return `
+      <div id=product-id-${id} class="item">
+       <img class="image" src=${img} alt="" />
+        <div class="details">
+          <h3>${nombre}</h3>
+          <p> ${desc}</p>
+          <div class="precio-cantidad">
+            <h4>$ ${precio}</h4>
+            <div class="buttons">
+              <i onclick ="disminuir(${id})" class="bi bi-dash-lg"></i>
+              <div id=${id} class="cantidad">
+              ${existeProducto.item === undefined ? 0 : existeProducto.item}
+              </div>
+              <i onclick ="incrementar(${id})" class="bi bi-plus-lg"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      `;
+  }));
+};
 
-const productosSeleccionados = [];
-let total = 0;
+crearTienda();
 
-mostrarProductos();
+// funciones para incrementarar, disminuir y actualizar
 
-// Solicitar al usuario que escriba el nombre del producto a comprar
-while (productosSeleccionados.length < 3) {
-  const nombreProducto = prompt(
-    'Ingresa el nombre de un producto a comprar (o "salir" para terminar):'
-  );
+let incrementar = (id) => {
+  let idSeleccionado = id;
+  let existeProducto = carrito.find((x) => x.id === idSeleccionado.id);
 
-  if (nombreProducto.toLowerCase() === "salir") {
-    break;
-  }
-
-  const producto = buscarProducto(nombreProducto); // {nombre, precio}
-
-  //para visualizar cada producto agregado
-  if (producto) {
-    productosSeleccionados.push(producto);
-    total += producto.precio;
-    console.log(`Producto agregado: ${producto.nombre}`);
+  if (!existeProducto) {
+    carrito.push({
+      id: idSeleccionado.id,
+      item: 1,
+    });
   } else {
-    console.log("Producto no encontrado. Intenta nuevamente.");
+    existeProducto.item += 1;
   }
-}
 
-console.log("Productos seleccionados:");
-//mostramos los productos seleccionados y el total de compra
-productosSeleccionados.forEach((producto) => {
-  console.log(`${producto.nombre} - $${producto.precio}`);
-});
+  localStorage.setItem("carritodata", JSON.stringify(carrito));
+  actualizar(idSeleccionado.id);
+};
 
-console.log(`Total de Compra: $${total}`);
+let disminuir = (id) => {
+  let idSeleccionado = id;
+  let existeProducto = carrito.find((x) => x.id === idSeleccionado.id);
+
+  if (existeProducto === undefined) return;
+  else if (existeProducto.item === 0) return;
+  else {
+    existeProducto.item -= 1;
+  }
+
+  carrito = carrito.filter((x) => x.item !== 0);
+
+  localStorage.setItem("carritodata", JSON.stringify(carrito));
+  actualizar(idSeleccionado.id);
+};
+
+let actualizar = (id) => {
+  let existeProducto = carrito.find((x) => x.id === id);
+  if (existeProducto) {
+    document.getElementById(id).innerHTML = existeProducto.item;
+  } else {
+    document.getElementById(id).innerHTML = 0;
+  }
+
+  carritoCalculo();
+};
+
+let carritoCalculo = () => {
+  let cartIcon = document.getElementById("cantidadCarrito");
+  cartIcon.innerHTML = carrito.map((x) => x.item).reduce((a, b) => a + b, 0);
+};
+
+carritoCalculo();
